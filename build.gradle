@@ -75,7 +75,7 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.20.1-47.1.0"  // версия Forge может отличаться
+    minecraft "net.minecraftforge:forge:1.20.1-47.1.1"  // версия Forge может отличаться
     // здесь будут ваши зависимости
 }
 

@@ -1,4 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
-  "textures": { "all": "raidportals:block/placeholder" }
+  "textures": {
+    "all": "raidportals:block/placeholder_block"
+  }
 }

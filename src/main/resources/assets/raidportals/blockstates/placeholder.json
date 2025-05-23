@@ -1,1 +1,5 @@
-{}
+{
+  "variants": {
+    "": { "model": "raidportals:block/placeholder_block" }
+  }
+}

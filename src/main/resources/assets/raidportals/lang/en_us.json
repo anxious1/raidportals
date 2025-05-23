@@ -1,1 +1,4 @@
-{}
+{
+  "block.raidportals.placeholder_block": "Placeholder Block",
+  "item.raidportals.placeholder_item": "Placeholder Item"
+}

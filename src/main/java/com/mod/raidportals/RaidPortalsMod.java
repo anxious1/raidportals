@@ -14,14 +14,14 @@ public class RaidPortalsMod {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public RaidPortalsMod() {
-        // Инициализация DeferredRegister (блоки, предметы, табы и т.д.)
+        // Инициализация регистрации блоков и предметов
         ModRegistry.init(FMLJavaModLoadingContext.get().getModEventBus());
 
-        // Регистрация конфига
+        // Регистрация общего конфига
         ModLoadingContext.get()
                 .registerConfig(ModConfig.Type.COMMON, RaidConfig.COMMON_SPEC);
 
-        // Подписка на игровые события
+        // Подписка на шину игровых событий (для RaidEventHandlers)
         MinecraftForge.EVENT_BUS.register(RaidEventHandlers.class);
 
         LOGGER.info("RaidPortalsMod initialized");

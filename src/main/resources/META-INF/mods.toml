@@ -1,0 +1,28 @@
+# Этот файл описывает метаданные вашего мода Raid Portals
+modLoader="javafml"
+loaderVersion="[47,)"               # версия Forge 47.x для MC 1.20.1
+license="MIT"                       # укажите вашу лицензию
+[[mods]]
+modId="raidportals"                 # идентификатор мода
+version="1.0.0"                     # версия мода
+displayName="Raid Portals"          # отображаемое имя
+authors=["ВашеИмя"]                 # список авторов
+description='''
+  Пустая заготовка мода Raid Portals.
+  Мод добавит рейд-порталы и арены для боёв с боссами.
+'''
+
+# Зависимости вашего мода
+[[dependencies.raidportals]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"             # та же версия Forge
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.raidportals]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.21.0)"    # MC 1.20.1 до 1.21.0
+ordering="NONE"
+side="BOTH"

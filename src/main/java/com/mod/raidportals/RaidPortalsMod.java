@@ -1,9 +1,5 @@
 package com.mod.raidportals;
 
-import com.mod.raidportals.ModRegistry;
-import com.mod.raidportals.RaidConfig;
-import com.mod.raidportals.RaidEventHandlers;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;

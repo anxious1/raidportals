@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "raidportals:block/exit_portal" }
+  }
+}

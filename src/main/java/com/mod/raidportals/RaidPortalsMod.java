@@ -1,6 +1,7 @@
 package com.mod.raidportals;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -14,7 +15,8 @@ import com.mojang.logging.LogUtils;
 @Mod(RaidPortalsMod.MODID)
 public class RaidPortalsMod {
     public static final String MODID = "raidportals";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    // делаем логгер публичным, чтобы все классы писали в один и тот же
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public RaidPortalsMod() {
         // 1) Регистрация блоков и предметов
@@ -25,23 +27,20 @@ public class RaidPortalsMod {
                 .registerConfig(ModConfig.Type.COMMON, RaidConfig.COMMON_SPEC);
 
         // 3) Подписка на игровые события
+        //    здесь лежит ваша логика тиков, спавна и удаления порталов
         MinecraftForge.EVENT_BUS.register(RaidEventHandlers.class);
 
         // 4) Клиентская и общая загрузка
-        FMLJavaModLoadingContext.get()
-                .getModEventBus()
-                .addListener(this::onClientSetup);
-        FMLJavaModLoadingContext.get()
-                .getModEventBus()
-                .addListener(this::onCommonSetup);
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modBus.addListener(this::onClientSetup);
+        modBus.addListener(this::onCommonSetup);
 
         LOGGER.info("RaidPortalsMod initialized");
     }
 
-    /** Клиентские настройки (если нужны рендер-слои и т.п.) */
+    /** Клиентские настройки (рендер-слои и т.п.) */
     private void onClientSetup(final FMLClientSetupEvent event) {
-        // здесь можно добавить RenderTypeLookup либо оставить пустым,
-        // если модели уже содержат render_type в JSON
+        // пусто, если не нужны особые render layers
     }
 
     /** Общие настройки: логируем значения из конфига при старте */

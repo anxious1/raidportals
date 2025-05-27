@@ -1,7 +1,10 @@
 package com.mod.raidportals.blocks;
 
 import com.mod.raidportals.ArenaManager;
+import com.mod.raidportals.RaidManager;
+import com.mod.raidportals.RaidPortalsMod;
 import com.mod.raidportals.ModRegistry;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,86 +19,95 @@ import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 
+import java.util.Set;
 import java.util.function.Function;
 
 public class Tier3PortalBlock extends Block {
     private static final ResourceLocation TEMPLATE =
             new ResourceLocation(ModRegistry.MODID, "arena_lvl_3");
-    private static final int Y_OFFSET = 3;
+    private static final int Y_OFFSET = 6, X_OFFSET = 8;
 
-    public Tier3PortalBlock(BlockBehaviour.Properties properties) {
-        super(properties);
+    public Tier3PortalBlock(BlockBehaviour.Properties props) {
+        super(props);
     }
 
     @Override
-    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-        System.out.println("[RaidPortals] entityInside @ " + pos);
-        if (world.isClientSide() || !(entity instanceof ServerPlayer player)) return;
+    public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity ent) {
+        if (worldIn.isClientSide() || !(ent instanceof ServerPlayer player)) return;
 
-        // Заходим только один раз из Overworld
-        if (player.getCommandSenderWorld().dimension() == ModRegistry.RAID_ARENA) {
-            System.out.println("[RaidPortals]  -> already in raid_arena, skip");
-            return;
-        }
+        // STEP 1
+        RaidPortalsMod.LOGGER.info("[Teleport] STEP 1: {} stepped into Tier1 portal at {}",
+                player.getName().getString(), pos);
 
-        // Берём целевой мир
-        ServerLevel raidLevel = player.getServer().getLevel(ModRegistry.RAID_ARENA);
+        // сохраняем портал
+        RaidManager.setActivePortalPosAndLevel((ServerLevel) worldIn, pos);
+        RaidManager.setActivePortal(true);
+
+        // STEP 2
+        ServerLevel raidLevel = player.server.getLevel(ModRegistry.RAID_ARENA);
         if (raidLevel == null) {
-            System.out.println("[RaidPortals]  -> raid_arena not found!");
             player.sendSystemMessage(Component.literal("§c[Ошибка] raid_arena не найдено!"));
             return;
         }
-
-        // Получаем или генерим арену
         var arena = ArenaManager.getOrCreateArena(pos, raidLevel, TEMPLATE);
-        if (arena == null) {
-            System.out.println("[RaidPortals]  -> Arena template missing");
-            player.sendSystemMessage(Component.literal("[RaidPortals] Шаблон lvl3 не найден"));
-            return;
-        }
+        RaidPortalsMod.LOGGER.info("[Teleport] STEP 2: arenaData = {}", arena);
 
-        double cx = arena.origin.getX() + arena.size.getX() / 2.0 + 0.5;
-        double cz = arena.origin.getZ() + arena.size.getZ() / 2.0 + 0.5;
+        // STEP 3
+        double cx = arena.origin.getX() + arena.size.getX()/2.0 + 0.5 + X_OFFSET;
         double cy = arena.origin.getY() + Y_OFFSET;
-        System.out.println(String.format("[RaidPortals]  -> target center = (%.3f, %.3f, %.3f)", cx, cy, cz));
+        double cz = arena.origin.getZ() + arena.size.getZ()/2.0 + 0.5;
+        RaidPortalsMod.LOGGER.info("[Teleport] STEP 3: target coords = ({},{},{})", cx, cy, cz);
 
-        // Меняем измерение с правильно реализованным ITeleporter
+        // STEP 4: changeDimension с правильным ITeleporter
         player.changeDimension(raidLevel, new ITeleporter() {
-            public PortalInfo getPortalInfo(ServerLevel dest, Entity ent, float yaw) {
-                System.out.println("[RaidPortals]    -> getPortalInfo()");
-                return new PortalInfo(new Vec3(cx, cy, cz),
+            public PortalInfo getPortalInfo(Entity e, ServerLevel dest, float yaw) {
+                RaidPortalsMod.LOGGER.info("[Teleport] STEP 4.1: getPortalInfo for dest={} yaw={}",
+                        dest.dimension(), yaw);
+                // возвращаем наши координаты напрямую
+                return new PortalInfo(
+                        new Vec3(cx, cy, cz),
                         Vec3.ZERO,
-                        ent.getYRot(),
-                        ent.getXRot());
+                        e.getYRot(),
+                        e.getXRot()
+                );
             }
 
             @Override
-            public Entity placeEntity(Entity ent,
-                                      ServerLevel currentWorld,
-                                      ServerLevel destWorld,
-                                      float yaw,
-                                      Function<Boolean, Entity> repositionEntity) {
-                System.out.println("[RaidPortals]    -> placeEntity()");
-                // создаём новый объект (кросс-дименсион)
-                Entity e = repositionEntity.apply(false);
-                // телепортируем именно туда
-                if (e instanceof ServerPlayer sp) {
-                    sp.teleportTo(destWorld, cx, cy, cz, sp.getYRot(), sp.getXRot());
-                } else {
-                    e.moveTo(cx, cy, cz);
+            public Entity placeEntity(Entity e, ServerLevel from, ServerLevel to, float yaw,
+                                      Function<Boolean, Entity> reposition) {
+                RaidPortalsMod.LOGGER.info("[Teleport] STEP 4.2: placeEntity from={} to={}",
+                        from.dimension(), to.dimension());
+
+                // false — чтобы не клонировать сущность
+                Entity repl = reposition.apply(false);
+                if (repl instanceof ServerPlayer sp) {
+                    // принудительно ставим позицию
+                    sp.setPos(cx, cy, cz);
+                    // и отправляем пакет клиенту
+                    sp.connection.teleport(cx, cy, cz, sp.getYRot(), sp.getXRot(), Set.of());
+                    RaidPortalsMod.LOGGER.info("[Teleport FIX] forced teleportTo({}, {}, {})", cx, cy, cz);
+
+                    // STEP 5: проверяем реальное положение
+                    BlockPos actual = sp.blockPosition();
+                    RaidPortalsMod.LOGGER.info("[Teleport] STEP 5: after teleport, {} is at {} in {}",
+                            sp.getName().getString(), actual, sp.level().dimension());
+                    sp.sendSystemMessage(Component.literal(
+                            String.format("You are now at %d, %d, %d in %s",
+                                    actual.getX(), actual.getY(), actual.getZ(),
+                                    sp.level().dimension().location()
+                            )
+                    ));
                 }
-                e.setDeltaMovement(Vec3.ZERO);
-                e.fallDistance = 0;
-                System.out.println("[RaidPortals]    -> placed at center");
-                return e;
+                return repl;
             }
 
             @Override
             public boolean isVanilla() {
-                System.out.println("[RaidPortals]    -> isVanilla() = false");
                 return false;
             }
         });
-        System.out.println("[RaidPortals]  -> changeDimension() called");
+
+        // финальное логирование
+        RaidPortalsMod.LOGGER.info("[Teleport] STEP 6: changeDimension completed");
     }
 }

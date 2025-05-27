@@ -1,4 +1,5 @@
 {
   "block.raidportals.placeholder_block": "Placeholder Block",
-  "item.raidportals.placeholder_item": "Placeholder Item"
+  "item.raidportals.placeholder_item": "Placeholder Item",
+  "block.raidportals.exit_portal": "Exit Portal"
 }

@@ -42,7 +42,7 @@ public class ArenaManager {
             if (tpl == null) return null;
 
             Vec3i size = tpl.getSize();
-            // origin в измерении:
+            // Вычисляем origin в измерении:
             BlockPos origin = new BlockPos(
                     k.x * GRID_STEP - size.getX() / 2,
                     ARENA_Y,
@@ -77,7 +77,8 @@ public class ArenaManager {
         public final BlockPos origin;
         public final Vec3i    size;
         public ArenaData(BlockPos origin, Vec3i size) {
-            this.origin = origin; this.size = size;
+            this.origin = origin;
+            this.size   = size;
         }
     }
 }

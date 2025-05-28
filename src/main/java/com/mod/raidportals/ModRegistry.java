@@ -89,6 +89,11 @@ public class ModRegistry {
             () -> new BlockItem(EXIT_PORTAL.get(), new Item.Properties())
     );
 
+    public static final RegistryObject<Item> RAID_COIN = ITEMS.register(
+            "raid_coin",
+            () -> new Item(new Item.Properties())
+    );
+
     public static final ResourceKey<DimensionType> RAID_ARENA_TYPE =
             ResourceKey.create(Registries.DIMENSION_TYPE,
                     new ResourceLocation(MODID, "raid_arena"));

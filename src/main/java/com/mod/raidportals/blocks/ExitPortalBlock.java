@@ -1,3 +1,4 @@
+// src/main/java/com/mod/raidportals/blocks/ExitPortalBlock.java
 package com.mod.raidportals.blocks;
 
 import com.mod.raidportals.RaidManager;
@@ -18,45 +19,40 @@ import net.minecraftforge.common.util.ITeleporter;
 import java.util.function.Function;
 
 public class ExitPortalBlock extends Block {
-    public ExitPortalBlock(BlockBehaviour.Properties props) { super(props); }
+    public ExitPortalBlock(BlockBehaviour.Properties props) {
+        super(props);
+    }
 
     @Override
     public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity ent) {
-        if (worldIn.isClientSide() || !(ent instanceof ServerPlayer player)) return;
-        RaidPortalsMod.LOGGER.info("[ExitPortal] {} at {}", player.getName().getString(), pos);
+        // только сервер, только игрок, и только если ещё не выходил через этот портал
+        if (worldIn.isClientSide()
+                || !(ent instanceof ServerPlayer player)
+                || RaidManager.hasExitedThrough(pos, player.getUUID())) {
+            return;
+        }
 
-        ServerLevel overworld = RaidManager.getOverworldLevel();
-        BlockPos entry = RaidManager.getActivePortalPos();
-        if (overworld == null || entry == null) {
+        RaidPortalsMod.LOGGER.info("[ExitPortal] {} entered portal at {}", player.getName().getString(), pos);
+
+        ServerLevel returnWorld = RaidManager.getOverworldLevel();
+        BlockPos returnPos      = RaidManager.getEntryPortalPos();
+        if (returnWorld == null || returnPos == null) {
             player.sendSystemMessage(Component.literal("§c[Ошибка] Портал не найден!"));
             return;
         }
 
-        // changeDimension обратно в Overworld к entry
-        player.changeDimension(overworld, new ITeleporter() {
-            public PortalInfo getPortalInfo(Entity e, ServerLevel dest, float yaw) {
-                // возвращаем координаты entry
-                return new PortalInfo(
-                        new Vec3(entry.getX()+0.5, entry.getY()+1, entry.getZ()+0.5),
-                        Vec3.ZERO,
-                        e.getYRot(), e.getXRot()
-                );
-            }
-            @Override
-            public Entity placeEntity(Entity e, ServerLevel from, ServerLevel to, float yaw,
-                                      Function<Boolean, Entity> reposition) {
-                return reposition.apply(false);
-            }
-            @Override public boolean isVanilla() { return false; }
-        });
+        // сразу регистрируем выход, чтобы защитить от дублирования
+        RaidManager.onPlayerExit(pos, player.getUUID());
 
-        // регистрируем выход
-        RaidManager.onPlayerExit(player);
-
-        // удаляем Exit, если все вышли
-        if (!RaidManager.getOverworldLevel().dimension().equals(worldIn.dimension())) {
-            // если ушёл в Overworld, удаляем Exit-портал
-            RaidManager.closeExitPortal((ServerLevel) worldIn);
-        }
+        // Телепорт игрока обратно в оверворлд
+        player.teleportTo(
+                returnWorld,
+                returnPos.getX() + 0.5,
+                returnPos.getY() + 1,      // +1 чтобы не застрять в земле
+                returnPos.getZ() + 0.5,
+                player.getYRot(),
+                player.getXRot()
+        );
+        RaidPortalsMod.LOGGER.info("[ExitPortal] teleported {} back to {}", player.getName().getString(), returnPos);
     }
 }

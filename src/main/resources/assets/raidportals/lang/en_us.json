@@ -1,5 +1,10 @@
 {
-  "block.raidportals.placeholder_block": "Placeholder Block",
-  "item.raidportals.placeholder_item": "Placeholder Item",
-  "block.raidportals.exit_portal": "Exit Portal"
+  "item.raidportals.raid_coin": "Raid coin",
+  "item.raidportals.raid_portal_lvl3": "Portal 3 tire",
+  "item.raidportals.raid_portal_lvl2": "Portal 2 tire",
+  "item.raidportals.raid_portal_lvl1": "Portal 1 tire",
+  "block.raidportals.exit_portal": "Exit portal",
+  "block.raidportals.raid_portal_lvl3": "Portal 3 tire",
+  "block.raidportals.raid_portal_lvl2": "Portal 2 tire",
+  "block.raidportals.raid_portal_lvl1": "Portal 1 tire"
 }

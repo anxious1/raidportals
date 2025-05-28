@@ -1,10 +1,10 @@
+// src/main/java/com/mod/raidportals/blocks/Tier1PortalBlock.java
 package com.mod.raidportals.blocks;
 
 import com.mod.raidportals.ArenaManager;
 import com.mod.raidportals.RaidManager;
 import com.mod.raidportals.RaidPortalsMod;
 import com.mod.raidportals.ModRegistry;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +25,7 @@ import java.util.function.Function;
 public class Tier1PortalBlock extends Block {
     private static final ResourceLocation TEMPLATE =
             new ResourceLocation(ModRegistry.MODID, "arena_lvl_1");
-    private static final int Y_OFFSET = 6, X_OFFSET = 8;
+    private static final int Y_OFFSET = 6, X_OFFSET = -20, Z_OFFSET = -1;
 
     public Tier1PortalBlock(BlockBehaviour.Properties props) {
         super(props);
@@ -33,13 +33,18 @@ public class Tier1PortalBlock extends Block {
 
     @Override
     public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity ent) {
+        // только сервер + только игрок
         if (worldIn.isClientSide() || !(ent instanceof ServerPlayer player)) return;
 
-        // STEP 1
+        // STEP 1 — ваша отлаженная логика
         RaidPortalsMod.LOGGER.info("[Teleport] STEP 1: {} stepped into Tier1 portal at {}",
                 player.getName().getString(), pos);
 
-        // сохраняем портал
+        // --- ДОБАВЛЕНО ДЛЯ БОСС-СПАВНА ---
+        RaidManager.setCurrentTier(1);
+        // --- конец добавления ---
+
+        // сохраняем портал (как у вас было)
         RaidManager.setActivePortalPosAndLevel((ServerLevel) worldIn, pos);
         RaidManager.setActivePortal(true);
 
@@ -55,39 +60,30 @@ public class Tier1PortalBlock extends Block {
         // STEP 3
         double cx = arena.origin.getX() + arena.size.getX()/2.0 + 0.5 + X_OFFSET;
         double cy = arena.origin.getY() + Y_OFFSET;
-        double cz = arena.origin.getZ() + arena.size.getZ()/2.0 + 0.5;
+        double cz = arena.origin.getZ() + arena.size.getZ()/2.0 + 0.5 + Z_OFFSET;
         RaidPortalsMod.LOGGER.info("[Teleport] STEP 3: target coords = ({},{},{})", cx, cy, cz);
 
-        // STEP 4: changeDimension с правильным ITeleporter
+        // --- ДОБАВЛЕНО ДЛЯ БОСС-СПАВНА ---
+        RaidManager.setLastTeleportPos(new Vec3(cx, cy, cz));
+        // --- конец добавления ---
+
+        // STEP 4 — не трогаем, ваша идеальная телепортация
         player.changeDimension(raidLevel, new ITeleporter() {
             public PortalInfo getPortalInfo(Entity e, ServerLevel dest, float yaw) {
-                RaidPortalsMod.LOGGER.info("[Teleport] STEP 4.1: getPortalInfo for dest={} yaw={}",
-                        dest.dimension(), yaw);
-                // возвращаем наши координаты напрямую
                 return new PortalInfo(
                         new Vec3(cx, cy, cz),
                         Vec3.ZERO,
-                        e.getYRot(),
-                        e.getXRot()
+                        e.getYRot(), e.getXRot()
                 );
             }
-
-            @Override
-            public Entity placeEntity(Entity e, ServerLevel from, ServerLevel to, float yaw,
-                                      Function<Boolean, Entity> reposition) {
-                RaidPortalsMod.LOGGER.info("[Teleport] STEP 4.2: placeEntity from={} to={}",
-                        from.dimension(), to.dimension());
-
-                // false — чтобы не клонировать сущность
+            @Override public Entity placeEntity(Entity e, ServerLevel from, ServerLevel to, float yaw,
+                                                Function<Boolean, Entity> reposition) {
                 Entity repl = reposition.apply(false);
                 if (repl instanceof ServerPlayer sp) {
-                    // принудительно ставим позицию
                     sp.setPos(cx, cy, cz);
-                    // и отправляем пакет клиенту
                     sp.connection.teleport(cx, cy, cz, sp.getYRot(), sp.getXRot(), Set.of());
                     RaidPortalsMod.LOGGER.info("[Teleport FIX] forced teleportTo({}, {}, {})", cx, cy, cz);
-
-                    // STEP 5: проверяем реальное положение
+                    // STEP 5: проверка
                     BlockPos actual = sp.blockPosition();
                     RaidPortalsMod.LOGGER.info("[Teleport] STEP 5: after teleport, {} is at {} in {}",
                             sp.getName().getString(), actual, sp.level().dimension());
@@ -100,14 +96,10 @@ public class Tier1PortalBlock extends Block {
                 }
                 return repl;
             }
-
-            @Override
-            public boolean isVanilla() {
-                return false;
-            }
+            @Override public boolean isVanilla() { return false; }
         });
 
-        // финальное логирование
+        // STEP 6
         RaidPortalsMod.LOGGER.info("[Teleport] STEP 6: changeDimension completed");
     }
 }

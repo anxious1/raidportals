@@ -1,4 +1,3 @@
-// src/main/java/com/mod/raidportals/ArenaManager.java
 package com.mod.raidportals;
 
 import net.minecraft.core.BlockPos;

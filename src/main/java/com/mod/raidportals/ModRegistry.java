@@ -1,4 +1,3 @@
-// src/main/java/com/mod/raidportals/ModRegistry.java
 package com.mod.raidportals;
 
 import com.mod.raidportals.blocks.ExitPortalBlock;

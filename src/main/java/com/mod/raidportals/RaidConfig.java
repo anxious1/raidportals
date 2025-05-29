@@ -1,4 +1,3 @@
-// src/main/java/com/mod/raidportals/RaidConfig.java
 package com.mod.raidportals;
 
 import net.minecraftforge.common.ForgeConfigSpec;

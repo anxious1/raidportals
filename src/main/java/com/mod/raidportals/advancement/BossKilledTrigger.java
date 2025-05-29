@@ -1,4 +1,3 @@
-// src/main/java/com/mod/raidportals/advancement/BossKilledTrigger.java
 package com.mod.raidportals.advancement;
 
 import com.google.gson.JsonObject;

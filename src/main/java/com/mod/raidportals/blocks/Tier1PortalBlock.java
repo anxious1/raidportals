@@ -1,4 +1,3 @@
-// src/main/java/com/mod/raidportals/blocks/Tier1PortalBlock.java
 package com.mod.raidportals.blocks;
 
 import com.mod.raidportals.ArenaManager;

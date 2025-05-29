@@ -1,0 +1,29 @@
+{
+  "criteria": {
+    "boss_tier2_killed": {
+      "trigger": "raidportals:boss_killed",
+      "conditions": {
+        "tier": 2
+      }
+    }
+  },
+  "requirements": [
+    [ "boss_tier2_killed" ]
+  ],
+  "display": {
+    "icon": {
+      "item": "minecraft:diamond_sword"
+    },
+    "title": {
+      "text": "Raid Level II",
+      "color": "aqua"
+    },
+    "description": {
+      "text": "Найдите портал Tier II и победите босса внутри. Ищите его в Верхнем мире."
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  }
+}

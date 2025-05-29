@@ -54,7 +54,7 @@ public class Tier3PortalBlock extends Block {
             player.sendSystemMessage(Component.literal("§c[Ошибка] raid_arena не найдено!"));
             return;
         }
-        var arena = ArenaManager.getOrCreateArena(pos, raidLevel, TEMPLATE);
+        var arena = ArenaManager.getOrCreateArena(raidLevel, TEMPLATE);
         RaidPortalsMod.LOGGER.info("[Teleport] STEP 2: arenaData = {}", arena);
 
         // STEP 3

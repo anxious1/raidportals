@@ -16,6 +16,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
+import com.mod.raidportals.advancement.BossKilledTrigger;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -282,8 +286,8 @@ public class RaidManager {
         List<? extends String> list;
         int hp; double ox, oz;
         switch (currentTier) {
-            case 1 -> { list = RaidConfig.COMMON.bossesLevel1.get(); hp = RaidConfig.COMMON.maxHpLevel1.get(); ox = 14; oz = 0; }
-            case 2 -> { list = RaidConfig.COMMON.bossesLevel2.get(); hp = RaidConfig.COMMON.maxHpLevel2.get(); ox = 14; oz = 0; }
+            case 1 -> { list = RaidConfig.COMMON.bossesLevel1.get(); hp = RaidConfig.COMMON.maxHpLevel1.get(); ox = 24; oz = 0; }
+            case 2 -> { list = RaidConfig.COMMON.bossesLevel2.get(); hp = RaidConfig.COMMON.maxHpLevel2.get(); ox = 24; oz = 0; }
             case 3 -> { list = RaidConfig.COMMON.bossesLevel3.get(); hp = RaidConfig.COMMON.maxHpLevel3.get(); ox = 0;  oz = -30; }
             default -> { list = RaidConfig.COMMON.bossesLevel1.get(); hp = RaidConfig.COMMON.maxHpLevel1.get(); ox = 0; oz = 0; }
         }

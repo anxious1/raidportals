@@ -12,11 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.portal.PortalInfo;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.ITeleporter;
-
-import java.util.function.Function;
 
 public class ExitPortalBlock extends Block {
     public ExitPortalBlock(BlockBehaviour.Properties props) {
@@ -25,7 +20,7 @@ public class ExitPortalBlock extends Block {
 
     @Override
     public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity ent) {
-        // только сервер, только игрок, и только если ещё не выходил через этот портал
+        // сервер + игрок + ещё не выходил через этот портал
         if (worldIn.isClientSide()
                 || !(ent instanceof ServerPlayer player)
                 || RaidManager.hasExitedThrough(pos, player.getUUID())) {
@@ -41,14 +36,14 @@ public class ExitPortalBlock extends Block {
             return;
         }
 
-        // сразу регистрируем выход, чтобы защитить от дублирования
+        // Регистрируем выход сразу, чтобы предотвратить дублирование
         RaidManager.onPlayerExit(pos, player.getUUID());
 
-        // Телепорт игрока обратно в оверворлд
+        // Телепортируем один раз здесь
         player.teleportTo(
                 returnWorld,
                 returnPos.getX() + 0.5,
-                returnPos.getY() + 1,      // +1 чтобы не застрять в земле
+                returnPos.getY() + 1.0,
                 returnPos.getZ() + 0.5,
                 player.getYRot(),
                 player.getXRot()

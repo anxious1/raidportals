@@ -1,0 +1,29 @@
+{
+  "criteria": {
+    "boss_tier1_killed": {
+      "trigger": "raidportals:boss_killed",
+      "conditions": {
+        "tier": 1
+      }
+    }
+  },
+  "requirements": [
+    [ "boss_tier1_killed" ]
+  ],
+  "display": {
+    "icon": {
+      "item": "minecraft:iron_sword"
+    },
+    "title": {
+      "text": "Raid Level I",
+      "color": "gold"
+    },
+    "description": {
+      "text": "Найдите портал Tier I и победите босса внутри. Ищите его в Верхнем мире."
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  }
+}

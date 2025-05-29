@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "raidportals:block/portal", "y": 0   },
+    "facing=east":  { "model": "raidportals:block/portal", "y": 90  },
+    "facing=south": { "model": "raidportals:block/portal", "y": 180 },
+    "facing=west":  { "model": "raidportals:block/portal", "y": 270 }
+  }
+}

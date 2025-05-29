@@ -13,42 +13,67 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Менеджер вставки арены для порталов:
- * – Overworld делится на «ячейки» 50×50 блоков по X и Z;
- * – Каждая ячейка маппится в измерении на координаты (cellX*1000, cellZ*1000);
- * – Шаблон вставляется однократно для каждой ячейки.
+ * – Новая арена генерируется по радиальному алгоритму (кольца шагом GRID_STEP вокруг (0,0));
+ * – Каждая конкретная входная структура (entryPortal.origin) порождает ровно одну арену;
+ * – Повторные вызовы для того же entryPortal.origin будут возвращать уже вставленную ArenaData.
  */
 public class ArenaManager {
-    private static final int OVERSTEP  = 50;    // ширина ячейки в Overworld
-    private static final int GRID_STEP = 1000;  // шаг в измерении
+    private static final int GRID_STEP = 1000;  // радиус шага колец
     private static final int ARENA_Y   = 100;   // высота вставки арены
 
-    private static final Map<CellKey, ArenaData> ARENAS = new ConcurrentHashMap<>();
+    // Карта: для каждой origin входного портала — своя арена
+    private static final Map<BlockPos, ArenaData> ARENAS = new ConcurrentHashMap<>();
+
+    // Индекс для очередной арены в кольцевом порядке
+    private static int nextArenaIndex = 0;
 
     /**
-     * Возвращает данные арены (origin + size) для ячейки, куда упал портал.
-     * Если ещё не вставлено – делает это.
+     * Возвращает данные арены для текущего entry-portal.
+     * Если для этого entryPortal.origin арена ещё не создана — вставляет структуру.
      */
-    public static ArenaData getOrCreateArena(BlockPos portalPos,
-                                             ServerLevel raidLevel,
-                                             ResourceLocation templateLoc) {
-        int cellX = Math.floorDiv(portalPos.getX(), OVERSTEP);
-        int cellZ = Math.floorDiv(portalPos.getZ(), OVERSTEP);
-        CellKey key = new CellKey(cellX, cellZ);
+    public static ArenaData getOrCreateArena(ServerLevel raidLevel, ResourceLocation templateLoc) {
+        // Ключ — именно origin входного портала
+        BlockPos entryOrigin = RaidManager.getEntryPortalPos();
+        if (entryOrigin == null) {
+            return null; // портал ещё не заспавнен
+        }
 
-        return ARENAS.computeIfAbsent(key, k -> {
+        return ARENAS.computeIfAbsent(entryOrigin, originKey -> {
+            // Загружаем шаблон
             StructureTemplate tpl = raidLevel.getStructureManager()
                     .get(templateLoc)
                     .orElse(null);
             if (tpl == null) return null;
-
             Vec3i size = tpl.getSize();
-            // Вычисляем origin в измерении:
+
+            // Рассчитываем радиальную позицию для этой арены
+            int n = nextArenaIndex++;
+            int layer = (int) Math.ceil((Math.sqrt(n + 1) - 1) / 2);
+            int legLen = layer * 2;
+            int maxPrev = layer > 1 ? (2 * (layer - 1) - 1) * (2 * (layer - 1) - 1) : 0;
+            int indexInLayer = n - maxPrev;
+            int side = indexInLayer / legLen;       // 0..3
+            int offset = indexInLayer % legLen;     // 0..legLen-1
+
+            int dx, dz;
+            switch (side) {
+                case 0 -> { dx = layer;        dz = -layer + offset; }
+                case 1 -> { dx = layer - offset; dz = layer;      }
+                case 2 -> { dx = -layer;       dz = layer - offset; }
+                default -> { dx = -layer + offset; dz = -layer;    }
+            }
+
+            int x = dx * GRID_STEP;
+            int z = dz * GRID_STEP;
+
+            // Центрируем шаблон по его размеру
             BlockPos origin = new BlockPos(
-                    k.x * GRID_STEP - size.getX() / 2,
+                    x - size.getX() / 2,
                     ARENA_Y,
-                    k.z * GRID_STEP - size.getZ() / 2
+                    z - size.getZ() / 2
             );
 
+            // Вставляем структуру в мир
             tpl.placeInWorld(
                     raidLevel,
                     origin,
@@ -57,19 +82,9 @@ public class ArenaManager {
                     raidLevel.random,
                     2
             );
+
             return new ArenaData(origin, size);
         });
-    }
-
-    /** Уникальный ключ ячейки по осям в Overworld */
-    private static class CellKey {
-        final int x, z;
-        CellKey(int x, int z) { this.x = x; this.z = z; }
-        @Override public boolean equals(Object o) {
-            if (!(o instanceof CellKey)) return false;
-            CellKey k = (CellKey)o; return k.x==x && k.z==z;
-        }
-        @Override public int hashCode() { return x*31 + z; }
     }
 
     /** Данные вставленной арены: origin и размер шаблона */

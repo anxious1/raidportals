@@ -1,10 +1,6 @@
-// src/main/java/com/mod/raidportals/ModRegistry.java
 package com.mod.raidportals;
 
-import com.mod.raidportals.blocks.ExitPortalBlock;
-import com.mod.raidportals.blocks.Tier1PortalBlock;
-import com.mod.raidportals.blocks.Tier2PortalBlock;
-import com.mod.raidportals.blocks.Tier3PortalBlock;
+import com.mod.raidportals.blocks.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.PushReaction;
@@ -105,6 +101,167 @@ public class ModRegistry {
         ITEMS.register(bus);
         bus.register(ModRegistry.class);
     }
+    // Регистрируем блок
+    public static final RegistryObject<Block> TIER1_PIECE_00 = BLOCKS.register(
+            "tier1_piece_00",
+            () -> new Tier1PortalBlock(
+                    BlockBehaviour.Properties.of()
+                            .noCollission()
+                            .pushReaction(PushReaction.BLOCK)
+                            .strength(-1.0F, 3600000.0F)
+                            .lightLevel(state -> 10)
+            )
+    );
+
+    // ... и регистрируйте к нему BlockItem по тому же имени:
+    public static final RegistryObject<Item> TIER1_PIECE_00_ITEM = ITEMS.register(
+            "tier1_piece_00",
+            () -> new BlockItem(TIER1_PIECE_00.get(), new Item.Properties())
+    );
+
+    // Регистрируем блок
+    public static final RegistryObject<Block> TIER1_PIECE_01 = BLOCKS.register(
+            "tier1_piece_01",
+            () -> new Tier1PortalBlock(
+                    BlockBehaviour.Properties.of()
+                            .noCollission()
+                            .pushReaction(PushReaction.BLOCK)
+                            .strength(-1.0F, 3600000.0F)
+                            .lightLevel(state -> 10)
+            )
+    );
+
+    // ... и регистрируйте к нему BlockItem по тому же имени:
+    public static final RegistryObject<Item> TIER1_PIECE_01_ITEM = ITEMS.register(
+            "tier1_piece_01",
+            () -> new BlockItem(TIER1_PIECE_01.get(), new Item.Properties())
+    );
+
+    // Регистрируем блок
+    public static final RegistryObject<Block> TIER1_PIECE_02 = BLOCKS.register(
+            "tier1_piece_02",
+            () -> new Tier1PortalBlock(
+                    BlockBehaviour.Properties.of()
+                            .noCollission()
+                            .pushReaction(PushReaction.BLOCK)
+                            .strength(-1.0F, 3600000.0F)
+                            .lightLevel(state -> 10)
+            )
+    );
+
+    // ... и регистрируйте к нему BlockItem по тому же имени:
+    public static final RegistryObject<Item> TIER1_PIECE_02_ITEM = ITEMS.register(
+            "tier1_piece_02",
+            () -> new BlockItem(TIER1_PIECE_02.get(), new Item.Properties())
+    );
+
+    // Регистрируем блок
+    public static final RegistryObject<Block> TIER1_PIECE_10 = BLOCKS.register(
+            "tier1_piece_10",
+            () -> new Tier1PortalBlock(
+                    BlockBehaviour.Properties.of()
+                            .noCollission()
+                            .pushReaction(PushReaction.BLOCK)
+                            .strength(-1.0F, 3600000.0F)
+                            .lightLevel(state -> 10)
+            )
+    );
+
+    // ... и регистрируйте к нему BlockItem по тому же имени:
+    public static final RegistryObject<Item> TIER1_PIECE_10_ITEM = ITEMS.register(
+            "tier1_piece_10",
+            () -> new BlockItem(TIER1_PIECE_10.get(), new Item.Properties())
+    );
+
+    // Регистрируем блок
+    public static final RegistryObject<Block> TIER1_PIECE_11 = BLOCKS.register(
+            "tier1_piece_11",
+            () -> new Tier1PortalBlock(
+                    BlockBehaviour.Properties.of()
+                            .noCollission()
+                            .pushReaction(PushReaction.BLOCK)
+                            .strength(-1.0F, 3600000.0F)
+                            .lightLevel(state -> 10)
+            )
+    );
+
+    // ... и регистрируйте к нему BlockItem по тому же имени:
+    public static final RegistryObject<Item> TIER1_PIECE_11_ITEM = ITEMS.register(
+            "tier1_piece_11",
+            () -> new BlockItem(TIER1_PIECE_11.get(), new Item.Properties())
+    );
+
+    // Регистрируем блок
+    public static final RegistryObject<Block> TIER1_PIECE_12 = BLOCKS.register(
+            "tier1_piece_12",
+            () -> new Tier1PortalBlock(
+                    BlockBehaviour.Properties.of()
+                            .noCollission()
+                            .pushReaction(PushReaction.BLOCK)
+                            .strength(-1.0F, 3600000.0F)
+                            .lightLevel(state -> 10)
+            )
+    );
+
+    // ... и регистрируйте к нему BlockItem по тому же имени:
+    public static final RegistryObject<Item> TIER1_PIECE_12_ITEM = ITEMS.register(
+            "tier1_piece_12",
+            () -> new BlockItem(TIER1_PIECE_12.get(), new Item.Properties())
+    );
+
+    // Регистрируем блок
+    public static final RegistryObject<Block> TIER1_PIECE_20 = BLOCKS.register(
+            "tier1_piece_20",
+            () -> new Tier1PortalBlock(
+                    BlockBehaviour.Properties.of()
+                            .noCollission()
+                            .pushReaction(PushReaction.BLOCK)
+                            .strength(-1.0F, 3600000.0F)
+                            .lightLevel(state -> 10)
+            )
+    );
+
+    // ... и регистрируйте к нему BlockItem по тому же имени:
+    public static final RegistryObject<Item> TIER1_PIECE_20_ITEM = ITEMS.register(
+            "tier1_piece_20",
+            () -> new BlockItem(TIER1_PIECE_20.get(), new Item.Properties())
+    );
+
+    // Регистрируем блок
+    public static final RegistryObject<Block> TIER1_PIECE_21 = BLOCKS.register(
+            "tier1_piece_21",
+            () -> new Tier1PortalBlock(
+                    BlockBehaviour.Properties.of()
+                            .noCollission()
+                            .pushReaction(PushReaction.BLOCK)
+                            .strength(-1.0F, 3600000.0F)
+                            .lightLevel(state -> 10)
+            )
+    );
+
+    // ... и регистрируйте к нему BlockItem по тому же имени:
+    public static final RegistryObject<Item> TIER1_PIECE_21_ITEM = ITEMS.register(
+            "tier1_piece_21",
+            () -> new BlockItem(TIER1_PIECE_21.get(), new Item.Properties())
+    );
+
+    // Регистрируем блок
+    public static final RegistryObject<Block> TIER1_PIECE_22 = BLOCKS.register(
+            "tier1_piece_22",
+            () -> new Tier1PortalBlock(
+                    BlockBehaviour.Properties.of()
+                            .noCollission()
+                            .pushReaction(PushReaction.BLOCK)
+                            .strength(-1.0F, 3600000.0F)
+                            .lightLevel(state -> 10)
+            )
+    );
+
+    // ... и регистрируйте к нему BlockItem по тому же имени:
+    public static final RegistryObject<Item> TIER1_PIECE_22_ITEM = ITEMS.register(
+            "tier1_piece_22",
+            () -> new BlockItem(TIER1_PIECE_22.get(), new Item.Properties())
+    );
 
     @SubscribeEvent
     public static void onCommonSetup(FMLCommonSetupEvent event) {

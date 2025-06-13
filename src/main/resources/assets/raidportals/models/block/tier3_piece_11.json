@@ -1,0 +1,8 @@
+{
+  "loader": "forge:obj",
+  "model": "raidportals:models/block/tier3_piece_11.obj",
+  "flip-v": true,
+  "ambientocclusion": false,
+  "textures": {
+  }
+}

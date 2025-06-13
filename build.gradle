@@ -53,7 +53,9 @@ minecraft {
             }
         }
 
-        client { }
+        client {
+            property 'forge.logging.markers', 'RESOURCE,ATLAS,STITCH'
+            property 'forge.logging.console.level', 'debug' }
         server { args '--nogui' }
         gameTestServer { }
         data {
@@ -69,7 +71,6 @@ minecraft {
 sourceSets.main.resources {
     srcDir 'src/generated/resources'
 }
-
 repositories {
     // ForgeGradle уже добавляет MavenCentral и Forge maven
 }

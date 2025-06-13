@@ -1,0 +1,29 @@
+{
+  "criteria": {
+    "boss_tier3_killed": {
+      "trigger": "raidportals:boss_killed",
+      "conditions": {
+        "tier": 3
+      }
+    }
+  },
+  "requirements": [
+    [ "boss_tier3_killed" ]
+  ],
+  "display": {
+    "icon": {
+      "item": "minecraft:netherite_sword"
+    },
+    "title": {
+      "text": "Raid Level III",
+      "color": "dark_purple"
+    },
+    "description": {
+      "text": "Найдите портал Tier III и победите босса внутри. Ищите его в Верхнем мире."
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  }
+}

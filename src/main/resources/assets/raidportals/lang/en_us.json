@@ -1,4 +1,6 @@
 {
-  "block.raidportals.placeholder_block": "Placeholder Block",
-  "item.raidportals.placeholder_item": "Placeholder Item"
+  "item.raidportals.tier1_raid_coin": "Raid coin I tier",
+  "item.raidportals.tier2_raid_coin": "Raid coin II tier",
+  "item.raidportals.tier3_raid_coin": "Raid coin III tier",
+  "itemGroup.raidportals.tab": "Raid Portals"
 }

@@ -1,4 +1,3 @@
-// src/main/java/com/mod/raidportals/blocks/Tier1PortalBlock.java
 package com.mod.raidportals.blocks;
 
 import com.mod.raidportals.ArenaManager;
@@ -11,14 +10,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.ITeleporter;
-
 import java.util.Set;
 import java.util.function.Function;
 
@@ -31,9 +33,26 @@ public class Tier1PortalBlock extends Block {
         super(props);
     }
 
+    /** 1) Контур (outline), рисующийся при наведении */
+    public VoxelShape getOutlineShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext ctx) {
+        return Shapes.empty();
+    }
+
+    /** 2) Форма для трассировки луча (ray-trace) — куда “видит” курсор */
+    public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext ctx) {
+        return Shapes.empty();
+    }
+
+    /** 3) Форма для клика (pick-shape) — куда кликает курсор */
+    // В mappings MCP/Forge может называться getPickShape, но в Mojang mappings – getShape
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext ctx) {
+        return Shapes.empty();
+    }
+
+
     @Override
     public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity ent) {
-        // только сервер + только игрок
+        // 1) Только сервер + только игрок
         if (worldIn.isClientSide() || !(ent instanceof ServerPlayer player)) return;
 
         // STEP 1 — ваша отлаженная логика

@@ -52,8 +52,8 @@ public class ArenaManager {
             int legLen = layer * 2;
             int maxPrev = layer > 1 ? (2 * (layer - 1) - 1) * (2 * (layer - 1) - 1) : 0;
             int indexInLayer = n - maxPrev;
-            int side = indexInLayer / legLen;       // 0..3
-            int offset = indexInLayer % legLen;     // 0..legLen-1
+            int side = indexInLayer / (legLen+1);       // 0..3
+            int offset = indexInLayer % (legLen+1);     // 0..legLen-1
 
             int dx, dz;
             switch (side) {

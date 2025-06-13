@@ -100,12 +100,21 @@ public class RaidEventHandlers {
             LOGGER.info("[RaidEvent] Advancement trigger fired for tier={}", tier);
         }
 
-        // Спавним монеты
         RandomSource rnd = arena.getRandom();
-        int coins = 5 + rnd.nextInt(6);
-        ItemEntity coinEntity = new ItemEntity(arena, e.getX(), e.getY()+1, e.getZ(),
-                new ItemStack(ModRegistry.RAID_COIN.get(), coins));
-        arena.addFreshEntity(coinEntity);
+        int count = 5 + rnd.nextInt(6);
+        ItemStack coinsStack;
+        switch (tier) {
+            case 1 -> coinsStack = new ItemStack(ModRegistry.TIER1_RAID_COIN.get(), count);
+            case 2 -> coinsStack = new ItemStack(ModRegistry.TIER2_RAID_COIN.get(), count);
+            case 3 -> coinsStack = new ItemStack(ModRegistry.TIER3_RAID_COIN.get(), count);
+            default -> coinsStack = ItemStack.EMPTY;
+        }
+        if (!coinsStack.isEmpty()) {
+            ItemEntity coinEntity = new ItemEntity(
+                    arena, e.getX(), e.getY() + 1, e.getZ(), coinsStack
+            );
+            arena.addFreshEntity(coinEntity);
+        }
 
         // Спавним выходной портал
         BlockPos deathPos = e.blockPosition();

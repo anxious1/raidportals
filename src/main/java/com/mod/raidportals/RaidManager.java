@@ -1,19 +1,24 @@
 package com.mod.raidportals;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 import com.mod.raidportals.advancement.BossKilledTrigger;
@@ -179,6 +184,25 @@ public class RaidManager {
             overworldLevel  = world;
             overworldOrigin = place;
             hasActivePortal = true;
+
+            // Спавним надпись «Рейд X тир» сразу после создания портала
+            BlockPos labelPos = place.above(1);
+            ArmorStand raidLabel = new ArmorStand(EntityType.ARMOR_STAND, world);
+            raidLabel.moveTo(
+                    labelPos.getX() + 1.5,
+                    labelPos.getY() + 0.5,
+                    labelPos.getZ()
+            );
+            raidLabel.setInvisible(true);
+            raidLabel.setNoGravity(true);
+            raidLabel.setCustomName(
+                    Component.literal("§6Рейд " + tier + " тир")
+                            .withStyle(ChatFormatting.GOLD)
+            );
+            raidLabel.setCustomNameVisible(true);
+            world.addFreshEntity(raidLabel);
+            LOGGER.info("[RaidManager] spawned overwrite label {} at {}", raidLabel.getUUID(), labelPos);
+
             bossSpawned     = false;
             raidParticipants.clear();
             exitPortals.clear();
@@ -186,6 +210,15 @@ public class RaidManager {
             // Таймер: через минуту удаляем, если никто не вошёл
             SCHEDULER.schedule(() -> {
                 if (raidParticipants.isEmpty() && hasActivePortal) {
+                    // 1) Удаляем ArmorStand-маркер
+                    AABB box = new AABB(place).inflate(2);
+                    world.getEntitiesOfClass(
+                            ArmorStand.class,
+                            box,
+                            stand -> stand.isInvisible()
+                                    && stand.getCustomName() != null
+                                    && stand.getCustomName().getString().startsWith("Рейд ")
+                    ).forEach(Entity::discard);
                     for (BlockPos bp : pd.placedBlocks) {
                         pd.world.setBlock(bp, Blocks.AIR.defaultBlockState(), 3);
                     }
@@ -219,6 +252,23 @@ public class RaidManager {
         BlockPos exitPos = bossPos.above();
 
         tpl.placeInWorld(world, exitPos, exitPos, settings, world.random, 2);
+
+        BlockPos labelPos = exitPos.above(1);
+        ArmorStand exitLabel = new ArmorStand(EntityType.ARMOR_STAND, world);
+        exitLabel.moveTo(
+                labelPos.getX() + 1.5,
+                labelPos.getY() + 0.5,
+                labelPos.getZ()
+        );
+        exitLabel.setInvisible(true);
+        exitLabel.setNoGravity(true);
+// Не делаем marker, чтобы имя всегда оставалось в зоне рендера
+        exitLabel.setCustomName(
+                Component.literal("Выход")
+                        .withStyle(ChatFormatting.YELLOW)
+        );
+        exitLabel.setCustomNameVisible(true);
+        world.addFreshEntity(exitLabel);
 
         PortalData pd = new PortalData(world, exitPos, size, tpl, settings);
         for (int dx = 0; dx < size.getX(); dx++)
@@ -261,11 +311,29 @@ public class RaidManager {
             LOGGER.info("[RaidManager] teleported {} back to {}", playerId, overworldOrigin);
         }
 
+        AABB exitBox = new AABB(origin).inflate(2);
+        pd.world.getEntitiesOfClass(
+                ArmorStand.class,
+                exitBox,
+                stand -> stand.isInvisible()
+                        && stand.getCustomName() != null
+                        && "Выход".equals(stand.getCustomName().getString())
+        ).forEach(Entity::discard);
+
         // Удаляем exit-портал
         for (BlockPos bp : pd.placedBlocks) {
             pd.world.setBlock(bp, Blocks.AIR.defaultBlockState(), 3);
         }
         exitPortals.remove(origin);
+
+        AABB entryBox = new AABB(overworldOrigin).inflate(2);
+        entryPortal.world.getEntitiesOfClass(
+                ArmorStand.class,
+                entryBox,
+                stand -> stand.isInvisible()
+                        && stand.getCustomName() != null
+                        && stand.getCustomName().getString().startsWith("Рейд ")
+        ).forEach(Entity::discard);
 
         // Удаляем входной портал
         for (BlockPos bp : entryPortal.placedBlocks) {

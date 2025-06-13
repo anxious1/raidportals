@@ -1,10 +1,6 @@
 {
-  "item.raidportals.raid_coin": "Raid coin",
-  "item.raidportals.raid_portal_lvl3": "Portal 3 tire",
-  "item.raidportals.raid_portal_lvl2": "Portal 2 tire",
-  "item.raidportals.raid_portal_lvl1": "Portal 1 tire",
-  "block.raidportals.exit_portal": "Exit portal",
-  "block.raidportals.raid_portal_lvl3": "Portal 3 tire",
-  "block.raidportals.raid_portal_lvl2": "Portal 2 tire",
-  "block.raidportals.raid_portal_lvl1": "Portal 1 tire"
+  "item.raidportals.tier1_raid_coin": "Raid coin I tier",
+  "item.raidportals.tier2_raid_coin": "Raid coin II tier",
+  "item.raidportals.tier3_raid_coin": "Raid coin III tier",
+  "itemGroup.raidportals.tab": "Raid Portals"
 }

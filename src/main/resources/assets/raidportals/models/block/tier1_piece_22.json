@@ -4,7 +4,5 @@
   "flip-v": true,
   "ambientocclusion": false,
   "textures": {
-    "0": "raidportals:block/tier1_piece_22",
-    "particle": "raidportals:block/tier1_piece_22"
   }
 }

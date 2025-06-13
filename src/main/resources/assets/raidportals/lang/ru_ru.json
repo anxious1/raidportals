@@ -1,10 +1,6 @@
 {
-  "item.raidportals.raid_coin": "Монета рейда",
-  "item.raidportals.raid_portal_lvl3": "Портал 3 тира",
-  "item.raidportals.raid_portal_lvl2": "Портал 2 тира",
-  "item.raidportals.raid_portal_lvl1": "Портал 1 тира",
-  "block.raidportals.exit_portal": "Анальный Портал",
-  "block.raidportals.raid_portal_lvl3": "Портал 3 тира",
-  "block.raidportals.raid_portal_lvl2": "Портал 2 тира",
-  "block.raidportals.raid_portal_lvl1": "Портал 1 тира"
+  "item.raidportals.tier1_raid_coin": "Монета рейда I типа",
+  "item.raidportals.tier2_raid_coin": "Монета рейда II типа",
+  "item.raidportals.tier3_raid_coin": "Монета рейда III типа",
+  "itemGroup.raidportals.tab": "Порталы рейда"
 }

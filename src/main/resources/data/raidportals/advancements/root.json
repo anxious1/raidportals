@@ -1,0 +1,30 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:ender_eye"
+    },
+    "title": {
+      "text": "RAAAAAID",
+      "color": "gold"
+    },
+    "description": {
+      "text": "Найдите любой рейд-портал и зайдите в него!"
+    },
+    "background": "raidportals:textures/gui/advancements/backgrounds/pasted.png",
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "root": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "root"
+    ]
+  ]
+}
+

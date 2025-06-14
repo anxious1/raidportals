@@ -1,4 +1,5 @@
 {
+  "parent": "raidportals:root",
   "criteria": {
     "boss_tier2_killed": {
       "trigger": "raidportals:boss_killed",

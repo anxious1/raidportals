@@ -56,6 +56,17 @@ public class Tier3PortalBlock extends Block {
         // только сервер + только игрок
         if (worldIn.isClientSide() || !(ent instanceof ServerPlayer player)) return;
 
+        var server = player.getServer();
+        if (server != null) {
+            var advManager = server.getAdvancements();
+            var advancement = advManager.getAdvancement(
+                    new ResourceLocation(RaidPortalsMod.MODID, "root")
+            );
+            if (advancement != null) {
+                player.getAdvancements().award(advancement, "root");
+            }
+        }
+
         // STEP 1 — ваша отлаженная логика
         RaidPortalsMod.LOGGER.info("[Teleport] STEP 1: {} stepped into Tier3 portal at {}",
                 player.getName().getString(), pos);

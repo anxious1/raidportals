@@ -1,0 +1,32 @@
+{
+  "replace": false,
+  "values": [
+    "raidportals:tier0_piece_00",
+    "raidportals:tier0_piece_01",
+    "raidportals:tier0_piece_02",
+    "raidportals:tier0_piece_10",
+    "raidportals:tier0_piece_11",
+    "raidportals:tier0_piece_12",
+    "raidportals:tier0_piece_20",
+    "raidportals:tier0_piece_21",
+    "raidportals:tier0_piece_22",
+    "raidportals:tier2_piece_00",
+    "raidportals:tier2_piece_01",
+    "raidportals:tier2_piece_02",
+    "raidportals:tier2_piece_10",
+    "raidportals:tier2_piece_11",
+    "raidportals:tier2_piece_12",
+    "raidportals:tier2_piece_20",
+    "raidportals:tier2_piece_21",
+    "raidportals:tier2_piece_22",
+    "raidportals:tier3_piece_00",
+    "raidportals:tier3_piece_01",
+    "raidportals:tier3_piece_02",
+    "raidportals:tier3_piece_10",
+    "raidportals:tier3_piece_11",
+    "raidportals:tier3_piece_12",
+    "raidportals:tier3_piece_20",
+    "raidportals:tier3_piece_21",
+    "raidportals:tier3_piece_22"
+  ]
+}
